@@ -7387,3 +7387,12 @@ def test_clim():
         clim = (7, 8)
         norm = plot_method(clim=clim).norm
         assert (norm.vmin, norm.vmax) == clim
+
+
+@image_comparison(["extent_units"])
+def test_extent_units():
+    fig, ax = plt.subplots()
+    dates = np.arange("2020-01-01", "2020-01-13", dtype='datetime64')
+    arr = [[i+j for i in range(10)] for j in range(10)]
+    ax.imshow(arr, origin='lower', extent=[0, 10,
+              dates[10], dates[0]])

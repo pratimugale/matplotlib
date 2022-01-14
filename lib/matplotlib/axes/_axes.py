@@ -5409,7 +5409,7 @@ default: :rc:`scatter.edgecolors`
             See the :doc:`/tutorials/intermediate/imshow_extent` tutorial for
             examples and a more detailed description.
 
-        extent : floats (left, right, bottom, top), optional
+        extent : floats or units (left, right, bottom, top), optional
             The bounding box in data coordinates that the image will fill.
             The image is stretched individually along x and y to fill the box.
 
@@ -5486,6 +5486,24 @@ default: :rc:`scatter.edgecolors`
         if aspect is None:
             aspect = rcParams['image.aspect']
         self.set_aspect(aspect)
+
+        if extent is not None:
+            (left, right), = self._process_unit_info(
+                [("x", [extent[0], extent[1]])], kwargs)
+            (bottom, top), = self._process_unit_info(
+                [("y", [extent[2], extent[3]])], kwargs)
+
+            left = self._validate_converted_limits(
+                left, self.convert_xunits)
+            right = self._validate_converted_limits(
+                right, self.convert_xunits)
+            bottom = self._validate_converted_limits(
+                bottom, self.convert_yunits)
+            top = self._validate_converted_limits(
+                top, self.convert_yunits)
+
+            extent = [left, right, bottom, top]
+
         im = mimage.AxesImage(self, cmap, norm, interpolation,
                               origin, extent, filternorm=filternorm,
                               filterrad=filterrad, resample=resample,
